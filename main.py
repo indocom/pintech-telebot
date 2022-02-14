@@ -36,7 +36,7 @@ def set_logging():
 
 
 def set_up_jobs(updater):
-    updater.job_queue.run_repeating(broadcast_pull_requests, interval=30, first=0)
+    updater.job_queue.run_repeating(broadcast_pull_requests, interval=10, first=0)
 
 
 def set_up_handlers(dispatcher):

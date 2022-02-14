@@ -37,9 +37,12 @@ def subscribe_github_repo(update: Update, context: CallbackContext):
     chat_id = str(update.effective_chat.id)
 
     try:
-        query = f'INSERT INTO {table_name} (chat_id, repo_name) VALUES ("{chat_id}", "{repo_name}")'
+        query = f'INSERT IGNORE INTO {table_name} (chat_id, repo_name) VALUES ("{chat_id}", "{repo_name}")'
         database_client.execute_query(query)
         logger.info(f"{chat_id} has subscribed to {repo_name} successfully")
+        message = f"has subscribed to {repo_name} successfully"
+        context.bot.send_message(chat_id=chat_id, text=message)
+
     except Exception as e:
         logger.error(f"Unable to subscribe to {repo_name} because of {e}")
         raise
@@ -54,6 +57,9 @@ def unsubscribe_github_repo(update: Update, context: CallbackContext):
         query = f'DELETE FROM {table_name} WHERE "chat_id"="{chat_id}" AND "repo_name"="{repo_name}"'
         database_client.execute_query(query)
         logger.info(f"{chat_id} has unsubscribed to {repo_name} successfully")
+        message = f"has unsubscribed to {repo_name} successfully"
+        context.bot.send_message(chat_id=chat_id, text=message)
+
     except Exception as e:
         logger.error(f"Unable to unsubscribe to {repo_name} because of {e}")
         raise
@@ -64,26 +70,37 @@ def broadcast_pull_requests(context: CallbackContext):
     query = f'SELECT chat_id, repo_name FROM {table_name}'
     chat_repo_tuples = database_client.execute_query(query)
     for chat_id, repo_name in chat_repo_tuples:
-        pull_requests = github_client.get_open_not_registered_pr(repo_name)
+        pull_requests = github_client.get_open_pr(repo_name, chat_id)
+        filtered_prs = filter_sent_pr(chat_id, pull_requests, repo_name)
 
         try:
             if len(pull_requests) == 0:
                 clean_up_existing_pr_id(repo_name)
-            else:
-                populate_pr_id(pull_requests, repo_name)
-                context.bot.send_message(chat_id=chat_id, text=convert_pr_list_to_string(pull_requests))
+
+            if len(filtered_prs) > 0:
+                populate_pr_id(filtered_prs, repo_name, chat_id)
+                context.bot.send_message(chat_id=chat_id, text=convert_pr_list_to_string(filtered_prs))
             logger.info(f"PR from {repo_name} has been broadcast successfully to {chat_id}")
 
         except Exception as e:
             logger.error(f"PR from {repo_name} has failed to be broadcast to {chat_id} because of {e}")
 
 
-def populate_pr_id(pull_requests, repo_name):
+def filter_sent_pr(chat_id, pull_requests, repo_name):
+    pr_table_name = "pull_request"
+    pr_ids = database_client.execute_query(
+        f'SELECT * FROM {pr_table_name} WHERE repo_name="{repo_name}" AND chat_id="{chat_id}"')
+    pr_ids = list(map(lambda x: x[0], pr_ids))
+    filtered_prs = list(filter(lambda x: int(x["id"]) not in pr_ids, pull_requests))
+    return filtered_prs
+
+
+def populate_pr_id(pull_requests, repo_name, chat_id):
     logger.info(f" Populating PRs of {repo_name}")
 
     pr_table_name = "pull_request"
     for pr in pull_requests:
-        query = f'INSERT INTO {pr_table_name} VALUES ({int(pr["id"])}, "{repo_name}")'
+        query = f'INSERT IGNORE INTO {pr_table_name} VALUES ({int(pr["id"])}, "{repo_name}", "{chat_id}")'
         database_client.execute_query(query)
 
 

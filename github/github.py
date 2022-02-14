@@ -38,12 +38,8 @@ class GitHubClient:
             self.logger.error(f"Unable to fetch the pr from of repo {repo} because {e}")
             return []
 
-    def get_open_not_registered_pr(self, repo: str) -> Union[Dict[str, str], List[Dict[str, Any]]]:
+    def get_open_pr(self, repo: str, chat_id: str) -> Union[Dict[str, str], List[Dict[str, Any]]]:
         try:
-            pr_table_name = "pull_request"
-            pr_ids = self.database_client.execute_query(f'SELECT * FROM {pr_table_name} WHERE repo_name="{repo}"')
-            pr_ids = list(map(lambda x: x[0], pr_ids))
-
             url = self.indocom_github_pr_api_url.format(repo=repo)
             response = requests.get(url, auth=('user', self.api_token))
             response = response.json()
@@ -51,7 +47,7 @@ class GitHubClient:
             if 'message' in response and response['message'] == 'Not Found':
                 return []
 
-            return list(filter(lambda x: int(x["id"]) not in pr_ids, response))
+            return response
 
         except Exception as e:
             self.logger.error(f"Unable to fetch the pr from of repo {repo} because {e}")
