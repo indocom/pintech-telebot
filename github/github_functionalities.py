@@ -74,13 +74,13 @@ def broadcast_pull_requests(context: CallbackContext):
         filtered_prs = filter_sent_pr(chat_id, pull_requests, repo_name)
 
         try:
-            if len(pull_requests) == 0:
+            if pull_requests is not None and len(pull_requests) == 0:
                 clean_up_existing_pr_id(repo_name)
 
             if len(filtered_prs) > 0:
                 populate_pr_id(filtered_prs, repo_name, chat_id)
                 context.bot.send_message(chat_id=chat_id, text=convert_pr_list_to_string(filtered_prs))
-            logger.info(f"PR from {repo_name} has been broadcast successfully to {chat_id}")
+                logger.info(f"PR from {repo_name} has been broadcast successfully to {chat_id}")
 
         except Exception as e:
             logger.error(f"PR from {repo_name} has failed to be broadcast to {chat_id} because of {e}")
@@ -96,7 +96,7 @@ def filter_sent_pr(chat_id, pull_requests, repo_name):
 
 
 def populate_pr_id(pull_requests, repo_name, chat_id):
-    logger.info(f" Populating PRs of {repo_name}")
+    logger.info(f" Populating PRs of {repo_name} of {chat_id}, has {len(pull_requests)} PRs")
 
     pr_table_name = "pull_request"
     for pr in pull_requests:
