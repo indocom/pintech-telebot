@@ -7,7 +7,7 @@ from github.github_functionalities import get_github_repo
 class GetRepoCommand(BaseCommand):
     @property
     def help_message(self):
-        return "/repo:  Show the list of all repositories inside github.com/indocom\n\n"
+        return "/list_repo:  Show the list of all repositories inside github.com/indocom\n\n"
 
     @property
     def handler(self):

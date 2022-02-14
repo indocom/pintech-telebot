@@ -7,7 +7,7 @@ from github.github_functionalities import get_subscribed_repo
 class GetSubscribedRepoCommand(BaseCommand):
     @property
     def help_message(self):
-        return "/status: Show list of all repositories that you have subscribed\n\n"
+        return "/check_subscribed_repo: Show list of all repositories that you have subscribed\n\n"
 
     @property
     def handler(self):

@@ -4,8 +4,8 @@ from feature.subscribe_repo import SubscribeRepoCommand
 from feature.unsubscribe_repo import UnsubscribeRepoCommand
 
 COMMANDS = [
-    SubscribeRepoCommand(),
-    UnsubscribeRepoCommand(),
     GetRepoCommand(),
     GetSubscribedRepoCommand(),
+    SubscribeRepoCommand(),
+    UnsubscribeRepoCommand(),
 ]

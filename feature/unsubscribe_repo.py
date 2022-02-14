@@ -8,7 +8,7 @@ class UnsubscribeRepoCommand(BaseCommand):
     @property
     def help_message(self):
         return "/unsubscribe_repo <REPO_FULL_NAME>: Unsubscribe repo, use /repo to get the repo full name. (e.g. " \
-               "/unsubscribe_repo indocom/pinus-client) \n\n "
+               "/unsubscribe_repo indocom/pinus-client) \n\n"
 
     @property
     def handler(self):
