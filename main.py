@@ -10,8 +10,8 @@ is_started = False
 
 def main():
     global is_started
-    # BOT_API_TOKEN = "5268775728:AAH6avGSH9fIRNk_caGwHtwwCgRXfLOLNRI"  # Prod Bot
-    BOT_API_TOKEN = "5235631374:AAFPGWzqTcFt3xEAS3reNoQO0ACD2rdfxkU"  # Testing Bot
+    BOT_API_TOKEN = "5268775728:AAH6avGSH9fIRNk_caGwHtwwCgRXfLOLNRI"  # Prod Bot
+    # BOT_API_TOKEN = "5235631374:AAFPGWzqTcFt3xEAS3reNoQO0ACD2rdfxkU"  # Testing Bot
 
     set_logging()
 
