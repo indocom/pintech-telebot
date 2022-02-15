@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 
-from feature.commands import COMMANDS
+from feature.features_list import COMMANDS
 
 
 def track_users(update: Update, context: CallbackContext):

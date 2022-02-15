@@ -2,8 +2,7 @@ import logging
 
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
 
-from feature.commands import COMMANDS
-from github.github_functionalities import broadcast_pull_requests
+from feature.features_list import COMMANDS, JOBS
 from misc_handlers import handle_unknown_command, handle_help_message
 
 is_started = False
@@ -11,8 +10,8 @@ is_started = False
 
 def main():
     global is_started
-    BOT_API_TOKEN = "5268775728:AAH6avGSH9fIRNk_caGwHtwwCgRXfLOLNRI"  # Prod Bot
-    # BOT_API_TOKEN = "5235631374:AAFPGWzqTcFt3xEAS3reNoQO0ACD2rdfxkU"  # Testing Bot
+    # BOT_API_TOKEN = "5268775728:AAH6avGSH9fIRNk_caGwHtwwCgRXfLOLNRI"  # Prod Bot
+    BOT_API_TOKEN = "5235631374:AAFPGWzqTcFt3xEAS3reNoQO0ACD2rdfxkU"  # Testing Bot
 
     set_logging()
 
@@ -38,7 +37,8 @@ def set_logging():
 
 
 def set_up_jobs(updater):
-    updater.job_queue.run_repeating(broadcast_pull_requests, interval=10, first=0)
+    for job in JOBS:
+        updater.job_queue.run_repeating(job.get_job(), interval=job.interval, first=0)
 
 
 def set_up_handlers(dispatcher):
