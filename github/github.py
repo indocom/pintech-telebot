@@ -20,6 +20,10 @@ class GitHubClient:
             response = requests.get(self.indocom_github_api_url, auth=('user', self.api_token))
             response = response.json()
 
+            if 'message' in response:
+                self.logger.error(f"Unable to fetch repo list because {response['message']}")
+                return ""
+
             repo_string_list = [f'- {repo["full_name"]} : {repo["svn_url"]} \n' for repo in response]
             return ''.join(repo_string_list)
 
@@ -33,7 +37,8 @@ class GitHubClient:
             response = requests.get(url, auth=('user', self.api_token))
             response = response.json()
 
-            if 'message' in response and response['message'] == 'Not Found':
+            if 'message' in response:
+                self.logger.error(f"Unable to fetch the pr from of repo {repo} because {response['message']}")
                 return None
 
             return response

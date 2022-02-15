@@ -1,5 +1,4 @@
 import logging
-import os
 
 from dotenv import load_dotenv
 from telegram import Update
@@ -11,11 +10,12 @@ from github.github import GitHubClient
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-GITHUB_API_TOKEN = "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"
+GITHUB_API_TOKEN = "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"
 
 database_name = 'telebot'
 database_client = MySQLClient(database_name)
 github_client = GitHubClient(GITHUB_API_TOKEN, database_client)
+
 
 def get_github_repo(update: Update, context: CallbackContext):
     repo_list_string = github_client.get_repo_list()
@@ -62,5 +62,3 @@ def unsubscribe_github_repo(update: Update, context: CallbackContext):
     except Exception as e:
         logger.error(f"Unable to unsubscribe to {repo_name} because of {e}")
         raise
-
-

@@ -5,6 +5,7 @@ from telegram.ext import CallbackContext
 from database.database import MySQLClient
 from feature.base_job import BaseJob
 from github.github import GitHubClient
+from github.github_functionalities import GITHUB_API_TOKEN
 
 github_telegram_map = {
     'simonjulianl': 'simonjulianl',
@@ -20,7 +21,6 @@ class BroadcastPrJob(BaseJob):
         self.logger = logging.getLogger(__name__)
         database_name = 'telebot'
         self.database_client = MySQLClient(database_name)
-        GITHUB_API_TOKEN = "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"
         self.github_client = GitHubClient(GITHUB_API_TOKEN, self.database_client)
 
     @property
