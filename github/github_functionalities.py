@@ -17,6 +17,14 @@ database_name = 'telebot'
 database_client = MySQLClient(database_name)
 github_client = GitHubClient(GITHUB_API_TOKEN, database_client)
 
+github_telegram_map = {
+    'simonjulianl': 'simonjulianl',
+    'lauwsj': 'simonjulianl',
+    'Amadeus-Winarto': 'amadeusw',
+    'bernarduskrishna': 'Bernardus_Krishna',
+    'CommanderW324': 'CwD324'
+}
+
 
 def get_github_repo(update: Update, context: CallbackContext):
     repo_list_string = github_client.get_repo_list()
@@ -113,4 +121,14 @@ def clean_up_existing_pr_id(repo_name: str):
 
 
 def convert_pr_list_to_string(pull_requests):
-    return ''.join([f'- {resp["title"]} : {resp["html_url"]} \n\n' for resp in pull_requests])
+    return ''.join([
+        f'New PR [opened by @{github_telegram_map.get(resp["user"]["login"], resp["user"]["login"])}] : {resp["title"]}\n'
+        f'Link: {resp["html_url"]}\n'
+        f'Reviewer : {get_reviewers(resp)} \n\n'
+        for resp in pull_requests])
+
+
+def get_reviewers(pull_request):
+    reviewer = ','.join(['@' + github_telegram_map.get(resp["login"], resp["login"]) for resp in
+                         pull_request["requested_reviewers"]])
+    return reviewer
