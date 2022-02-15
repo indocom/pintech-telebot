@@ -10,7 +10,7 @@ from github.github import GitHubClient
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-GITHUB_API_TOKEN = "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"
+GITHUB_API_TOKEN = "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"
 
 database_name = 'telebot'
 database_client = MySQLClient(database_name)
